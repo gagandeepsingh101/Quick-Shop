@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import axios from 'axios';
 import toast from 'react-hot-toast';
+import { addToCart } from '../api/cart';
 
 export default function ProductCard({ product }) {
   const [adding, setAdding] = useState(false);
@@ -16,29 +16,20 @@ export default function ProductCard({ product }) {
 
     setAdding(true);
     try {
-      await axios.post(
-        'http://localhost:5000/api/cart/add',
-        {
-          title: product.title,
-          price: product.price,
-          imageURL: product.image,
-          description: product.description,
-          quantity: 1,
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      toast.success(`Added ${product.title} to cart`, {
-        style: { background: '#dcfce7', color: '#15803d' },
+      await addToCart({
+        title: product.title,
+        price: product.price,
+        imageURL: product.image,
+        description: product.description,
+        quantity: 1,
       });
     } catch (err) {
-      console.error('Error adding to cart:', err);
-      toast.error('Failed to add to cart', {
-        style: { background: '#fee2e2', color: '#b91c1c' },
-      });
+      console.log(err);
     } finally {
       setAdding(false);
     }
   };
+
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200">
